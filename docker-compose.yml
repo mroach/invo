@@ -1,0 +1,63 @@
+version: "3.6"
+
+services:
+  db:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: letmein
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  # The setup of the webpack service, especially the volumes, looks like a
+  # tortured mess. The background: I don't want node_modules to exist on my
+  # host system. I only want it to exist inside a Docker volume. Problem is,
+  # Node is hellbent on node_modules living next to package.json.
+  # Docker doesn't support mounting sub-paths of already mounted volumes.
+  # So you can't do:
+  # volumes:
+  #   ./:/code
+  #   some_volume:/code/subdir
+  #
+  # The solution is to move all the asset sources into a 'src' subdirectory
+  # and mount it separately. Then separately mount the package.json and
+  # package-lock.json files above it. Then we can finally mount node_modules
+  # to a volume.
+  webpack:
+    build:
+      context: "."
+      dockerfile: Dockerfile.webpack
+    working_dir: /opt/dev/assets
+    command: webpack --mode development --watch
+    volumes:
+      - ./src/assets/package.json:/opt/dev/package.json
+      - ./src/assets/package-lock.json:/opt/dev/package-lock.json
+      - ./src/assets/src:/opt/dev/assets
+      - node_modules:/opt/dev/node_modules
+      - ./src/priv/static:/opt/dev/output
+
+  app:
+    build:
+      context: .
+    working_dir: /opt/dev/app
+    command: mix do deps.get, phx.server
+    ports:
+      - "4000:4000"
+    environment:
+      DB_HOST: db
+      DB_USER: app
+      DB_PASS: letmein
+      DB_NAME: autho_dev
+    volumes:
+      - ./src:/opt/dev/app
+      - mix_deps:/opt/mix/deps
+      - mix_build:/opt/mix/build
+    depends_on:
+      - db
+      - webpack
+
+volumes:
+  pg_data:
+  node_modules:
+  mix_deps:
+  mix_build:

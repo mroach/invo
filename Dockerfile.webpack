@@ -1,0 +1,12 @@
+# selected Node 12 as it's the latest LTS version
+FROM node:12-slim
+
+WORKDIR /opt/dev
+
+VOLUME /opt/dev/assets
+VOLUME /opt/dev/output
+VOLUME /opt/dev/node_modules
+
+ENV PATH="${PATH}:/opt/dev/node_modules/.bin"
+
+CMD ["npm", "run", "watch"]
