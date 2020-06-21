@@ -2,9 +2,10 @@ FROM elixir:1.10-slim
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
       git \
-      inotify-tools
+      inotify-tools \
+      build-essential
 
 ARG GID
 ARG UID
