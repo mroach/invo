@@ -40,4 +40,30 @@ defmodule InvoWeb.ConnCase do
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
+
+  @doc """
+  Setup helper that registers and logs in users.
+
+      setup :register_and_log_in_users
+
+  It stores an updated connection and a registered users in the
+  test context.
+  """
+  def register_and_log_in_users(%{conn: conn}) do
+    users = Invo.AccountsFixtures.users_fixture()
+    %{conn: log_in_users(conn, users), users: users}
+  end
+
+  @doc """
+  Logs the given `users` into the `conn`.
+
+  It returns an updated `conn`.
+  """
+  def log_in_users(conn, users) do
+    token = Invo.Accounts.generate_users_session_token(users)
+
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:users_token, token)
+  end
 end
