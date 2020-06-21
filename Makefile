@@ -1,6 +1,10 @@
+export UID = $(shell id -u)
+export GID = $(shell id -g)
+export USER = $(shell whoami)
+
 .PHONY: setup-dev
 setup-dev:
-	docker-compose build
+	docker-compose build --build-arg UID=${UID} --build-arg GID=${GID} --build-arg USER=${USER}
 	docker-compose run --rm app mix do deps.get, ecto.setup
 	docker-compose run --rm -w /opt/dev webpack npm install
 
