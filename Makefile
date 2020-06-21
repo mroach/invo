@@ -13,3 +13,15 @@ setup-dev:
 .PHONY: serve
 serve:
 	docker-compose up
+
+.PHONY: iex
+iex:
+	docker-compose exec app iex -S mix
+
+.PHONY: shell
+shell:
+	docker-compose exec app bash
+
+.PHONY: restart/%
+restart/%:
+	docker-compose restart ${@F}
