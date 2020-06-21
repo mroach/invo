@@ -47,7 +47,7 @@ services:
       DB_HOST: db
       DB_USER: app
       DB_PASS: letmein
-      DB_NAME: autho_dev
+      DB_NAME: invo_dev
     volumes:
       - ./src:/opt/dev/app
       - mix_deps:/opt/mix/deps
