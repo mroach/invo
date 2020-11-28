@@ -48,7 +48,7 @@ defmodule Invo.MixProject do
       {:bamboo, "~> 1.5"},
 
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phx_gen_auth, "~> 0.4.0", only: :dev, runtime: false}
+      {:phx_gen_auth, "~> 0.6.0", only: :dev, runtime: false}
     ]
   end
 
