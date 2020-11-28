@@ -1,4 +1,4 @@
-FROM elixir:1.10-slim
+FROM elixir:1.11-slim
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
